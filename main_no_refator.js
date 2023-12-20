@@ -8,19 +8,19 @@ export const riceCooker = {
   steamingInProgress: false,
   heatingInProgress: false,
 
-  addRice() { // overall O(1)
+  addRice() {  // overall O(1)
     if (!this.ricePresent) {
       this.ricePresent = true;
-      return ('Rice has been added.');
+      console.log('Rice has been added.');
+    } else {
+      console.log('There\'s already rice in the rice cooker.');
     }
-    return ('There\'s already rice in the rice cooker.');
-    
   },
 
-  cookRice() { // overall O(1)
+  cookRice() {  // overall O(1)
     if (this.ricePresent && !this.riceCooked) {
       console.log('Cooking rice...');
-      this.delaySync(1500); // O(1) because of constant parameter 
+      this.delaySync(1500);
       this.riceCooked = true;
       console.log('The rice has been cooked!');
     } else if (!this.ricePresent) {
@@ -30,11 +30,11 @@ export const riceCooker = {
     }
   },
 
-  steam() { // overall O(1)
+  steam() {  // overall O(1)
     if (this.ricePresent && !this.steamingInProgress) {
       console.log('Steaming in progress...');
       this.steamingInProgress = true;
-      this.delaySync(1500); // O(1) because of constant parameter 
+      this.delaySync(1500);
       this.steamingInProgress = false;
       console.log('Steaming completed!');
     } else if (!this.ricePresent) {
@@ -44,21 +44,20 @@ export const riceCooker = {
     }
   },
 
-  keepWarm() { // overall O(1)
+  keepWarm() {  // overall O(1)
     if (this.ricePresent && this.riceCooked && !this.heatingInProgress) {
+      console.log('The rice is now being kept warm.');
       this.heatingInProgress = true;
-      return ('The rice is now being kept warm.');
+    } else if (!this.ricePresent) {
+      console.log('Cannot keep warm. The rice cooker is empty.');
+    } else if (!this.riceCooked) {
+      console.log('Cannot keep warm. The rice is not cooked.');
+    } else {
+      console.log('Keeping warm is already in progress.');
     }
-    if (!this.ricePresent) {
-      return ('Cannot keep warm. The rice cooker is empty.');
-    }
-    if (!this.riceCooked) {
-      return ('Cannot keep warm. The rice is not cooked.');
-    } 
-    return ('Keeping warm is already in progress.');
   },
 
-  removeRice() { // overall O(1)
+  removeRice() {  // overall O(1)
     if (this.ricePresent && (this.riceCooked || this.heatingInProgress)) {
       this.ricePresent = false;
       this.riceCooked = false;
@@ -70,7 +69,7 @@ export const riceCooker = {
     }
   },
 
-  delaySync(ms) { // overall O(n) because depends on date.now() and ms i.e n
+  delaySync(ms) {  // overall O(n)
     const start = Date.now();
     while (Date.now() - start < ms) {
     }
@@ -78,35 +77,41 @@ export const riceCooker = {
 };
 
 
-export function simulateRiceCooker() { // overall O(1)
+export function simulateRiceCooker() { // Overall O(n)
+  let input;
+  const condition = true;
+
+  while (condition) {  // O(n)
     displayMenu();
-    try {
-        let input = parseInt(prompt('Enter your choice: '));
-        if(1 <= input <= 6){
-            console.log('Invalid choice. Please select a valid option.');
+    input = prompt('Enter your choice: ');
+
+    if (input) {
+      const choice = parseInt(input);
+
+      if (!isNaN(choice)) {
+        if (choice === 1) {
+          riceCooker.addRice();
+        } else if (choice === 2) {
+          riceCooker.cookRice();
+        } else if (choice === 3) {
+          riceCooker.steam();
+        } else if (choice === 4) {
+          riceCooker.keepWarm();
+        } else if (choice === 5) {
+          riceCooker.removeRice();
+        } else if (choice === 6) {
+          console.log('Thank you for using the Rice Cooker Simulator. Goodbye!');
+          break;
+        } else {
+          console.log('Invalid choice. Please select a valid option.');
         }
-    } catch (error) {
+      } else {
         console.log('Invalid input. Please enter a valid number.');
+      }
+    } else {
+      console.log('No input provided.');
     }
-    switch (input) { // overall O(1)
-        case 1:
-            return riceCooker.addRice();
-        case 2:    
-            riceCooker.cookRice();
-            break;
-        case 3:    
-            riceCooker.steam();
-            break;
-        case 4:    
-            riceCooker.keepWarm();
-            break;
-        case 5:    
-            riceCooker.removeRice();
-            break;
-        case 6:    
-            console.log('Thank you for using the Rice Cooker Simulator. Goodbye!')
-            break;
-    }
+  }
 }
 
 simulateRiceCooker();
